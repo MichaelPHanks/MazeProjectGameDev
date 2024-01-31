@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/../../../../../OneDrive/Pictures/IMG_2092.JPG","C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/bin/DesktopGL/Content/IMG_2092.xnb","TextureProcessor","Texture2DContent",152806,8294485,0.2742987
+"C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/square.png","C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/bin/DesktopGL/Content/square.xnb","TextureProcessor","Texture2DContent",480,202585,0.1158899
