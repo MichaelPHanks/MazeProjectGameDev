@@ -27,6 +27,8 @@ namespace MazeProjectGameDev
         private KeyboardState currentState;
         private Texture2D playerTexture;
 
+        private Texture2D endTexture;
+
         private const int GAME_MOVEMENT = 1;
 
         private int GameSize;
@@ -53,15 +55,16 @@ namespace MazeProjectGameDev
 
 
             isButtonPressed = false;
-            GameSize = 25;
-            GameWidth = 5;
-            GameHeight = 5;
+            GameSize = 400;
+            GameWidth = 20;
+            GameHeight = 20;
             playerIndex = 0;
             rectangles = new List<Rectangle>();
             isMouseOn = new List<bool>();
             m_myBox = new Rectangle(10, 0, m_graphics.PreferredBackBufferWidth / 10, m_graphics.PreferredBackBufferHeight / 10);
             m_myTexture = this.Content.Load<Texture2D>("square");
-            playerTexture = this.Content.Load<Texture2D>("IMG_2092");
+            endTexture = this.Content.Load<Texture2D>("IMG_2092");
+            playerTexture = this.Content.Load<Texture2D>("saulgoodman");
             for (int i = 0; i < GameHeight; i++)
             {
                 for (int j = 0; j < GameWidth; j++)
@@ -259,11 +262,16 @@ namespace MazeProjectGameDev
                     m_spriteBatch.Draw(playerTexture, rectangles[i], Color.White);
 
                 }
-                else
+                else if (i < rectangles.Count - 1)
                 {
                     m_spriteBatch.Draw(m_myTexture, rectangles[i], Color.Gray);
                 }
-                
+                else 
+                {
+                    m_spriteBatch.Draw(endTexture, rectangles[i], Color.Gray);
+
+                }
+
             }
 
             for(int i = 0;i < rectangles.Count;i++)

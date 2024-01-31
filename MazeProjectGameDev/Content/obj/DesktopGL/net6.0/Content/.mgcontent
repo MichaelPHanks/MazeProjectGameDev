@@ -4,11 +4,13 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/../../../../../OneDrive/Pictures/IMG_2092.JPG</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/../../../../../OneDrive/Desktop/saulgoodman.jpg</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/IMG_2092.JPG</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/square.png</File>
   </SourceFiles>
   <DestFiles>
-    <File>IMG_2092.JPG</File>
+    <File>saulgoodman.jpg</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

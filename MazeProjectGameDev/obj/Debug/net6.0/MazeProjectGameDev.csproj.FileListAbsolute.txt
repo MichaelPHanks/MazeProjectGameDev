@@ -25,3 +25,4 @@ C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6.0\ref\MazeProjectGameDev.dll
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\square.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\IMG_2092.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\saulgoodman.xnb

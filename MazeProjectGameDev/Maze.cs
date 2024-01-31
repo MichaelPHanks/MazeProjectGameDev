@@ -23,7 +23,6 @@ public class Maze
         private List<List<Node>> map = new List<List<Node>>();
         
 
-        private List<Edge> edges = new List<Edge>();
 
         public List<Edges> edges1 = new List<Edges>();
 
@@ -91,78 +90,8 @@ public class Maze
 
             // Gather neighbors for each node
 
-            for (int i = 0; i < sizeX; i++)
-            {
-                for (int j = 0; j < sizeY; j++)
-                {
-                    if (j != 0)
-                    {
-                        map[i][j].addNeighbor(map[i][j - 1]);
-
-                        if (edges.Any(obj => obj.getFrom() == map[i][j - 1] && obj.getTo() == map[i][j]))
-                        {
-                            // Don't do anything here...
-                        }
-                        else 
-                        {
-                            edges.Add(new Edge(map[i][j], map[i][j - 1]));
-
-                        }
-
-                    }
-                    if (j < sizeY - 1)
-
-                    {
-                        map[i][j].addNeighbor(map[i][j + 1]);
-                        if (edges.Any(obj => obj.getFrom() == map[i][j + 1] && obj.getTo() == map[i][j]))
-                        {
-                            // Don't do anything here...
-                        }
-                        else
-                        {
-                            edges.Add(new Edge(map[i][j], map[i][j + 1]));
-
-                        }
-
-
-                    }
-                    if (i < sizeX - 1)
-                    {
-                        map[i][j].addNeighbor(map[i + 1][j]);
-
-                        if (edges.Any(obj => obj.getFrom() == map[i+1][j] && obj.getTo() == map[i][j]))
-                        {
-                            // Don't do anything here...
-                        }
-                        else
-                        {
-                            edges.Add(new Edge(map[i][j], map[i + 1][j]));
-
-                        }
-
-
-                    }
-
-                    if (i != 0) 
-                    {
-                        map[i][j].addNeighbor(map[i - 1][j]);
-
-                        if (edges.Any(obj => obj.getFrom() == map[i - 1][j] && obj.getTo() == map[i][j]))
-                        {
-                            // Don't do anything here...
-                        }
-                        else
-                        {
-                            edges.Add(new Edge(map[i][j], map[i - i][j]));
-
-                        }
-
-
-                    }
-                }
-            }
+            
             createMaze();
-            //var shuffledList = edges.OrderBy(_ => _rand.Next()).ToList();
 
         }
         static void ShuffleList<T>(List<T> list)
@@ -218,46 +147,7 @@ public class Maze
 
         public void displayMap()
         {
-            /*for (int i = 0; i < sizeX; i++)
-            {
-                for (int j = 0; j < sizeY; j++)
-                {
-
-
-                    Console.Write(" " + map[i][j].getNeighbors().Count + " ");
-
-                    if (j < sizeX - 1)
-                    {
-                        if (edges.Any(obj => (obj.getFrom() == map[i][j] && obj.getTo() == map[i][j + 1]) || (obj.getFrom() == map[i][j + 1] && obj.getTo() == map[i][j])))
-                        {
-                            Console.Write("|");
-
-                        }
-                        else 
-                        {
-                            Console.Write(" ");
-
-                        }
-
-                    }
-                    
-
-                }
-                Console.WriteLine();
-
-                for (int k = 0; k < sizeY; k++)
-                {
-                    if (i < sizeY - 1)
-                    {
-                        if (edges.Any(obj => (obj.getFrom() == map[i][k] && obj.getTo() == map[i + 1][k]) || (obj.getFrom() == map[i + 1][k] && obj.getTo() == map[i][k])))
-                        {
-                            Console.Write(" -  ");
-
-                        }
-                    }
-                }
-                Console.WriteLine();
-            }*/
+            
 
 
             for (int j = 0; j < sizeY * sizeX; j++)
