@@ -197,6 +197,8 @@ namespace MazeProjectGameDev
             bool done = false;
 
             GraphNode tempNode = nodes[nodes.Count - 1];
+            shortestPath.Push(tempNode);
+            locations.Insert(0, tempNode.location);
 
             while (!done)
             {
