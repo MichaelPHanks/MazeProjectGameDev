@@ -202,7 +202,7 @@ namespace MazeProjectGameDev
             {
                 tempNode = tempNode.parent;
                 shortestPath.Push(tempNode);
-                locations.Add(tempNode.location);
+                locations.Insert(0,tempNode.location);
                 if (tempNode == nodes[position])
                 {
                     done = true;
@@ -210,6 +210,7 @@ namespace MazeProjectGameDev
 
             }
             shortestPath.Pop();
+            locations.RemoveAt(0);
 
         }
 

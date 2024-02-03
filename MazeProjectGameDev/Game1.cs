@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using static MazeProjectGameDev.Maze;
 using System.Reflection.Metadata;
+using Microsoft.Xna.Framework.Input.Touch;
+using System.Resources;
 
 namespace MazeProjectGameDev
 {
@@ -131,34 +133,7 @@ namespace MazeProjectGameDev
 
             }
 
-            if (GamePad.GetState(PlayerIndex.One).IsConnected)
-            {
-                var buttonList = new List<Buttons>()
-                {
-                    {Buttons.A},
-                    {Buttons.B},
-                    {Buttons.Y},
-                    {Buttons.X},
-                    {Buttons.Start},
-                    {Buttons.Back},
-                    {Buttons.RightShoulder},
-                    {Buttons.LeftShoulder},
-                    {Buttons.RightTrigger},
-                    {Buttons.LeftTrigger}
-                };
-                int total = 0;
-                foreach (var button in buttonList)
-                {
-                    if (!GamePad.GetState(PlayerIndex.One).IsButtonDown(button))
-                    {
-                        total += 1;
-                    }
-                }
-                if (total == 10)
-                {
-                    isButtonPressed = false;
-                }
-            }
+            
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
@@ -179,13 +154,21 @@ namespace MazeProjectGameDev
                     isButtonPressed = true;
 
                     // if the player is at index 9, 19, 29,
-                    if (playerNode.getRight() == maze.shortestPath.First())
+                    /*if (playerNode.getRight() == maze.shortestPath.First())
                     {
                         maze.shortestPath.Pop();
                     }
                     else
                     {
                         maze.shortestPath.Push(playerNode);
+                    }*/
+                    if (playerIndex + 1 == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
                     }
                     playerNode = playerNode.getRight();
                     playerIndex += 1;
@@ -203,13 +186,21 @@ namespace MazeProjectGameDev
                     isButtonPressed = true;
                     if (maze.shortestPath.Any()) 
                     {
-                        if (playerNode.getLeft() == maze.shortestPath.First())
+                        /*if (playerNode.getLeft() == maze.shortestPath.First())
                         {
                             maze.shortestPath.Pop();
                         }
                         else
                         {
                             maze.shortestPath.Push(playerNode);
+                        }*/
+                        if (playerIndex - 1 == maze.locations[0])
+                        {
+                            maze.locations.RemoveAt(0);
+                        }
+                        else
+                        {
+                            maze.locations.Insert(0, playerIndex);
                         }
                         playerNode = playerNode.getLeft();
                         playerIndex -= 1;
@@ -227,13 +218,21 @@ namespace MazeProjectGameDev
                 if (currentState.IsKeyDown(Keys.W) == !prevState.IsKeyDown(Keys.W))
                 {
                     isButtonPressed = true;
-                        if (playerNode.getTop() == maze.shortestPath.First())
+                    /*  if (playerNode.getTop() == maze.shortestPath.First())
+                  {
+                      maze.shortestPath.Pop();
+                  }
+                  else
+                  {
+                      maze.shortestPath.Push(playerNode);
+                  }*/
+                    if (playerIndex - GameWidth == maze.locations[0])
                     {
-                        maze.shortestPath.Pop();
+                        maze.locations.RemoveAt(0);
                     }
                     else
                     {
-                        maze.shortestPath.Push(playerNode);
+                        maze.locations.Insert(0, playerIndex);
                     }
                     playerNode = playerNode.getTop();
                     playerIndex -= GameWidth;
@@ -249,13 +248,22 @@ namespace MazeProjectGameDev
             {
                 if (currentState.IsKeyDown(Keys.S) == !prevState.IsKeyDown(Keys.S))
                 {
-                    if (playerNode.getBottom() == maze.shortestPath.First())
+                    /*if (playerNode.getBottom() == maze.shortestPath.First())
                     {
                         maze.shortestPath.Pop();
                     }
                     else
                     {
                         maze.shortestPath.Push(playerNode);
+                    }*/
+
+                    if (playerIndex + GameWidth == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
                     }
                     isButtonPressed = true;
                     playerNode = playerNode.getBottom();
@@ -266,9 +274,29 @@ namespace MazeProjectGameDev
 
             }
 
-            
 
-           
+            if (Keyboard.GetState().IsKeyDown (Keys.H)) 
+            {
+                GameWidth = 10;
+                GameHeight = 10;
+                GameSize = 100;
+                rectangles.Clear();
+                for (int i = 0; i < GameHeight; i++)
+                {
+                    for (int j = 0; j < GameWidth; j++)
+                    {
+                        rectangles.Add(new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth * j, m_graphics.PreferredBackBufferHeight / GameHeight * i, m_graphics.PreferredBackBufferWidth / GameWidth, m_graphics.PreferredBackBufferHeight / GameHeight));
+                    }
+                }
+                maze = new Maze(10,10, 0);
+                playerNode = maze.nodes[0];
+                m_myBox = new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth / 4, m_graphics.PreferredBackBufferHeight / GameWidth / 4, m_graphics.PreferredBackBufferWidth / GameWidth / 2, m_graphics.PreferredBackBufferHeight / GameHeight / 2);
+                playerIndex = 0;
+            }
+
+
+
+
 
 
 
