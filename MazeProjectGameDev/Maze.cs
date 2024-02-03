@@ -1,99 +1,218 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MazeProjectGameDev
 {
-    
-public class Maze
+
+    public class Maze
     {
+
+        public class GraphNode
+        {
+            private GraphNode top;
+            private GraphNode bottom;
+            private GraphNode left;
+            private GraphNode right;
+            public GraphNode parent;
+            public int location;
+            public bool isEnd;
+            public bool isVisited;
+
+            public GraphNode()
+            {
+                isVisited = false;
+
+            }
+            public void addTop(GraphNode node)
+            {
+                top = node;
+
+            }
+            public void addBottom(GraphNode node)
+            {
+                bottom = node;
+
+            }
+            public void addLeft(GraphNode node)
+            {
+                left = node;
+
+            }
+            public void addRight(GraphNode node)
+            {
+                right = node;
+
+            }
+
+            public GraphNode getRight() { return right; }
+            public GraphNode getLeft() { return left; }
+            public GraphNode getTop() { return top; }
+            public GraphNode getBottom() { return bottom; }
+
+
+
+
+        }
         public class Edges
         {
             public int to;
             public int from;
             public Edges(int from, int to)
-            { 
+            {
                 this.to = to;
                 this.from = from;
             }
         }
-        private List<List<Node>> map = new List<List<Node>>();
+        public Stack<GraphNode> shortestPath;
+        public List<GraphNode> nodes = new List<GraphNode>();
+        public List<int> locations = new List<int>();
+        public List<Edges> edges2 = new List<Edges>();
         
-
-
-        public List<Edges> edges1 = new List<Edges>();
 
         private int sizeX;
         private int sizeY;
-        public Maze(int sizeX, int sizeY) 
-        { 
+        public Maze(int sizeX, int sizeY, int playerPosition)
+        {
+
+
+
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             // Initialize map
-            for (int i = 0; i < sizeX; i++)
-            {
-                map.Add(new List<Node>());
-                for (int j = 0; j < sizeY; j++)
-                {
-                    map[i].Add(new Node(i, j));
-                }
-            }
+
+
+
             for (int i = 0; i < sizeX * sizeY; i++)
             {
-                if ((i + 1) % sizeY != 0)
+                nodes.Add(new GraphNode());
+                nodes[i].location = i;
+                nodes[i].isEnd = false;
+            }
+
+            nodes[nodes.Count - 1].isEnd = true;
+
+            for (int i = 0; i < sizeX * sizeY; i++)
+            {
+                if (i + sizeX < sizeX * sizeY)
                 {
-                    if (edges1.Any(obj => obj.from == i -1  && obj.to == i))
-                    {
-                    }
-                    else
-                    {
-                        edges1.Add(new Edges(i, i + 1));
-                    }
+                    edges2.Add(new Edges(i, i + sizeX));
 
                 }
-                if (i % sizeY != 0 && i != 0)
+                if ((i + 1) % sizeX != 0 || i == 0)
                 {
-                    if (edges1.Any(obj => obj.from == i - 1 && obj.to == i))
-                    {
-                    }
-                    else
-                    {
-                        edges1.Add(new Edges(i, i - 1));
-                    }
-                }
-                if (i + sizeY < sizeX * sizeY)
-                {
-                    if (edges1.Any(obj => obj.from == i + sizeY && obj.to == i))
-                    {
-                    }
-                    else
-                    {
-                        edges1.Add(new Edges(i, i + sizeY));
-                    }
-
-                }
-                if (i - sizeY >= 0)
-                {
-                    if (edges1.Any(obj => obj.from == i - sizeY && obj.to == i))
-                    {
-                    }
-                    else
-                    {
-                        edges1.Add(new Edges(i, i - sizeY));
-                    }
+                    edges2.Add(new Edges(i, i + 1));
 
                 }
             }
-
-            // Gather neighbors for each node
-
-            
             createMaze();
+            findShortestPath(playerPosition);
 
         }
+
+        public void findShortestPath(int position)
+        {
+            shortestPath = new Stack<GraphNode>();
+            Queue<GraphNode> queue = new Queue<GraphNode>();
+
+            queue.Enqueue(nodes[position]);
+            bool foundEnd = false;
+            while (queue.Count > 0)
+            {
+                GraphNode node = queue.Dequeue();
+                GraphNode bottom = node.getBottom();
+                GraphNode top = node.getTop();
+                GraphNode left = node.getLeft();
+                GraphNode right = node.getRight();
+                if (right != null)
+                {
+                    if (!right.isVisited)
+                    {
+                        right.isVisited = true;
+                        right.parent = node;
+                        if (right.isEnd)
+                        {
+                            foundEnd = true;
+                        }
+                        queue.Enqueue(right);
+                    }
+
+                }
+                if (left != null)
+                {
+                    if (!left.isVisited)
+                    {
+                        left.isVisited = true;
+                        left.parent = node;
+                        if (left.isEnd)
+                        {
+                            foundEnd = true;
+                        }
+                        queue.Enqueue(left);
+                    }
+
+
+                }
+                if (bottom != null)
+                {
+                    if (!bottom.isVisited)
+                    {
+                        bottom.isVisited = true;
+                        bottom.parent = node;
+                        if (bottom.isEnd)
+                        {
+                            foundEnd = true;
+                        }
+                        queue.Enqueue(bottom);
+                    }
+                }
+
+                if (top != null)
+                {
+                    if (!top.isVisited)
+                    {
+                        top.isVisited = true;
+                        top.parent = node;
+                        if (top.isEnd)
+                        {
+                            foundEnd = true;
+                        }
+                        queue.Enqueue(top);
+
+                    }
+
+                }
+                if (foundEnd)
+                {
+                    queue.Clear();
+                }
+
+            }
+            bool done = false;
+
+            GraphNode tempNode = nodes[nodes.Count - 1];
+
+            while (!done)
+            {
+                tempNode = tempNode.parent;
+                shortestPath.Push(tempNode);
+                locations.Add(tempNode.location);
+                if (tempNode == nodes[position])
+                {
+                    done = true;
+                }
+
+            }
+            shortestPath.Pop();
+
+        }
+
         static void ShuffleList<T>(List<T> list)
         {
             Random random = new Random();
@@ -114,167 +233,57 @@ public class Maze
         {
             // Randomize the list and set up the disjoint set
 
-            DisjointSet set = new DisjointSet(sizeX,sizeY);
+            DisjointSet set = new DisjointSet(sizeX, sizeY);
 
-            ShuffleList(edges1);
+            ShuffleList(edges2);
 
-            for (int i = 0; i < edges1.Count; i++)
+            for (int i = 0; i < edges2.Count; i++)
             {
-                if (set.find(edges1[i].from) != set.find(edges1[i].to))
+                if (set.find(edges2[i].from) != set.find(edges2[i].to))
                 {
-                    set.union(set.find(edges1[i].from), set.find(edges1[i].to));
-                    edges1.RemoveAt(i);
-                    i--;
-                }
-                
 
-                
-                        
-            }
+                    int difference = Math.Abs(edges2[i].to - edges2[i].from);
 
-        }
-
-
-        public List<List<Node>> getMap() { return map; }
-
-        public void displayEdges()
-        { 
-            foreach (var edge in edges1) 
-            {
-                Console.WriteLine(edge.from + " " + edge.to);
-            }
-        }
-
-        public void displayMap()
-        {
-            
-
-
-            for (int j = 0; j < sizeY * sizeX; j++)
-            {
-                Console.Write("\u25A0 ");
-                if (edges1.Any(obj => (obj.from == j && obj.to == j + 1) || (obj.from == j+1 && obj.to == j)))
-                {
-                    Console.Write("| ");
-                }
-                else {
-                    Console.Write(" ");
-                }
-
-                if ((j + 1) % sizeY == 0)
-                {
-                    Console.WriteLine();
-                    for (int i = j; i < sizeY + j; i++)
+                    if (difference % sizeX == 0)
                     {
-                        if (edges1.Any(obj => (obj.from == i && obj.to == i + sizeX) || (obj.from == i  + sizeX && obj.to == i)))
-                        {
-
-                            Console.Write("- ");
-                        }
-                        else
-                        {
-                            Console.Write("  ");
-                        }
-                    }
-                    Console.WriteLine();
-                }
-
-
-
-
-            }
-            for (int i = 0; i < sizeY; i++)
-            {
-                for (int j = 0; j < sizeX; j++)
-                {
-                    int currentCell = i * sizeX + j;
-
-                    // Print the square character
-                    Console.Write("\u25A0");
-
-                    // Check for right wall
-                    if (edges1.Any(obj => (obj.from == currentCell && obj.to == currentCell + 1) || (obj.from == currentCell + 1 && obj.to == currentCell)))
-                    {
-                        Console.Write("|");
+                        nodes[edges2[i].from].addBottom(nodes[edges2[i].to]);
+                        nodes[edges2[i].to].addTop(nodes[edges2[i].from]);
                     }
                     else
                     {
-                        Console.Write(" ");
+                        nodes[edges2[i].from].addRight(nodes[edges2[i].to]);
+                        nodes[edges2[i].to].addLeft(nodes[edges2[i].from]);
                     }
+                    set.union(set.find(edges2[i].from), set.find(edges2[i].to));
                 }
-
-                Console.WriteLine();
-
-                // Print horizontal walls
-                for (int j = 0; j < sizeX; j++)
-                {
-                    int currentCell = i * sizeX + j;
-
-                    // Check for bottom wall
-                    if (edges1.Any(obj => (obj.from == currentCell && obj.to == currentCell + sizeX) || (obj.from == currentCell + sizeX && obj.to == currentCell)))
-                    {
-                        Console.Write("- ");
-                    }
-                    else
-                    {
-                        Console.Write("  ");
-                    }
-                }
-
-                Console.WriteLine();
             }
-
-
-
-
-        }
-
-
-
-        public class Edge
-        {
-            private Node from;
-            private Node to;
-
-
-            public Edge(Node from, Node to)
-            { 
-                this.from = from;
-                this.to = to;
-            }
-
-            public Node getFrom() { return from; }  
-            public Node getTo() { return to; }
-        }
-
-
-        public class Node
-        {
-            private List<Node> neighbors = new List<Node>();
-            private int x;
-            private int y;
-            private int parent;
-            public Node(int x, int y)
+            for (int i = 0; i < sizeX * sizeY; i++)
             {
-                this.x = x;
-                this.y = y;
-
-            }
-
-            public void addNeighbor(Node node)
+                for (int j = 0; j < sizeY * sizeX; j++)
                 {
-                neighbors.Add(node);
-            }
-            public List<Node> getNeighbors() { return neighbors;}
+                    if (set.find(i) != set.find(j))
+                    {
+                        throw new Exception(
+                                   "Maze did not build correctly");
+                    }
+                }
 
-            public int getX() { return x; } 
-            public int getY() { return y; }
-            public int getParent() { return parent; }
+            }
+
         }
+
+
+
+        
+
+
+
+
+
+
+
     }
 
-    
+
 
 }
-
-    

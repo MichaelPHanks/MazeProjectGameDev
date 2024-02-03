@@ -26,3 +26,9 @@ C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\square.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\IMG_2092.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\saulgoodman.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundMaze.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundBoth.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundBottom.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundRight.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\mazeBackgroundNone.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixilMoney.xnb
