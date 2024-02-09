@@ -32,3 +32,4 @@ C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundRight.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\mazeBackgroundNone.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixilMoney.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\Fonts\MainFont.xnb

@@ -73,6 +73,13 @@
 /processorParam:TextureFormat=Color
 /build:backgroundRight.png
 
+#begin Fonts/MainFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MainFont.spritefont
+
 #begin IMG_2092.JPG
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -9,6 +9,7 @@
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundBottom.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundMaze.jpg</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundRight.png</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/Fonts/MainFont.spritefont</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/IMG_2092.JPG</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/mazeBackgroundNone.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixilMoney.png</File>
@@ -16,6 +17,7 @@
   </SourceFiles>
   <DestFiles>
     <File>saulgoodman.jpg</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
