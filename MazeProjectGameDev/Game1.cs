@@ -49,7 +49,6 @@ namespace MazeProjectGameDev
         private int GameHeight;
        
 
-        private bool isButtonPressed;
 
 
 
@@ -71,7 +70,6 @@ namespace MazeProjectGameDev
             giveBreadCrumbs = false;
             giveHint = false;
             showShortestPath = false;
-            isButtonPressed = false;
             GameWidth = 20;
             GameHeight = 20;
             playerIndex = 0;
@@ -321,7 +319,6 @@ namespace MazeProjectGameDev
                 {
                     maze.locations.Insert(0, playerIndex);
                 }
-                isButtonPressed = true;
                 playerNode = playerNode.getBottom();
                 playerIndex += GameWidth;
                 m_myBox.Y += mazeRectangle.Height / GameHeight;
