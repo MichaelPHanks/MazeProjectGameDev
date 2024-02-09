@@ -9,20 +9,24 @@ using static MazeProjectGameDev.Maze;
 using System.Reflection.Metadata;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.Resources;
-
+using MazeProjectGameDev.InputHandling;
 namespace MazeProjectGameDev
 {
     public class Game1 : Game
     {
         private GraphicsDeviceManager m_graphics;
         private SpriteBatch m_spriteBatch;
+        private ControllerInput m_inputController;
 
         private Maze maze;
+
+        private bool giveHint;
+        private bool giveBreadCrumbs;
+        private bool showShortestPath;
 
         private List<Rectangle> rectangles;
         private List<bool> isMouseOn;
 
-        private List<int> tempGameMovement;
         private int playerIndex;
         private Rectangle m_myBox;
 
@@ -34,18 +38,15 @@ namespace MazeProjectGameDev
         private KeyboardState currentState;
         private Texture2D playerTexture;
         private Texture2D shortestPathTexture;
-
+        private KeyboardInput m_inputKeyboard;
         private Texture2D endTexture;
 
         private GraphNode playerNode;
         private Rectangle mazeRectangle;
 
-        private const int GAME_MOVEMENT = 1;
 
-        private int GameSize;
         private int GameWidth;
         private int GameHeight;
-        private Texture2D pixel; // 1x1 pixel texture to represent the line
        
 
         private bool isButtonPressed;
@@ -66,9 +67,11 @@ namespace MazeProjectGameDev
             m_graphics.PreferredBackBufferHeight = 1080;
             m_graphics.ApplyChanges();
             // TODO: Add your initialization logic here
-            currentState = Keyboard.GetState();
+
+            giveBreadCrumbs = false;
+            giveHint = false;
+            showShortestPath = false;
             isButtonPressed = false;
-            GameSize = 400;
             GameWidth = 20;
             GameHeight = 20;
             playerIndex = 0;
@@ -91,6 +94,39 @@ namespace MazeProjectGameDev
             
 
             playerNode = maze.nodes[0];
+            playerNode.isPlayerVisited = true;
+
+
+            m_inputKeyboard = new KeyboardInput();
+            m_inputKeyboard.registerCommand(Keys.W, true, new IInputDevice.CommandDelegate(onMoveUp));
+            m_inputKeyboard.registerCommand(Keys.S, true, new IInputDevice.CommandDelegate(onMoveDown));
+            m_inputKeyboard.registerCommand(Keys.A, true, new IInputDevice.CommandDelegate(onMoveLeft));
+            m_inputKeyboard.registerCommand(Keys.D, true, new IInputDevice.CommandDelegate(onMoveRight));
+            m_inputKeyboard.registerCommand(Keys.Up, true, new IInputDevice.CommandDelegate(onMoveUp));
+            m_inputKeyboard.registerCommand(Keys.Down, true, new IInputDevice.CommandDelegate(onMoveDown));
+            m_inputKeyboard.registerCommand(Keys.Left, true, new IInputDevice.CommandDelegate(onMoveLeft));
+            m_inputKeyboard.registerCommand(Keys.Right, true, new IInputDevice.CommandDelegate(onMoveRight));
+            m_inputKeyboard.registerCommand(Keys.H, true, new IInputDevice.CommandDelegate(hintToggle));
+            m_inputKeyboard.registerCommand(Keys.B, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
+
+            m_inputKeyboard.registerCommand(Keys.P, true, new IInputDevice.CommandDelegate(shortestPathToggle));
+
+
+
+
+            m_inputController = new ControllerInput();
+            m_inputController.registerCommand(Buttons.DPadUp, true, new IInputDevice.CommandDelegate(onMoveUp));
+            m_inputController.registerCommand(Buttons.DPadDown, true, new IInputDevice.CommandDelegate(onMoveDown));
+            m_inputController.registerCommand(Buttons.DPadLeft, true, new IInputDevice.CommandDelegate(onMoveLeft));
+            m_inputController.registerCommand(Buttons.DPadRight, true, new IInputDevice.CommandDelegate(onMoveRight));
+            m_inputController.registerCommand(Buttons.Y, true, new IInputDevice.CommandDelegate(hintToggle));
+
+            m_inputController.registerCommand(Buttons.LeftTrigger, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
+
+            m_inputController.registerCommand(Buttons.RightTrigger, true, new IInputDevice.CommandDelegate(shortestPathToggle));
+
+
+
             base.Initialize();
         }
 
@@ -104,22 +140,27 @@ namespace MazeProjectGameDev
             playerTexture = this.Content.Load<Texture2D>("saulgoodman");
             shortestPathTexture = this.Content.Load<Texture2D>("pixilMoney");
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
-            pixel = new Texture2D(GraphicsDevice, 5, 5);
-            Color[] colors = new Color[5 * 5];
-            for (int i = 0; i < colors.Length; i++)
-            {
-                colors[i] = Color.White;
-            }
-            pixel.SetData(colors);
+            
 
 
             // TODO: use this.Content to load your game content here
         }
 
+        /// <summary>
+        ///     Processes input of player
+        /// </summary>
+        private void processInput(GameTime gameTime)
+        {
+            m_inputKeyboard.Update(gameTime);
+            m_inputController.Update(gameTime);
+        }
+
         protected override void Update(GameTime gameTime)
         {
+
+            processInput(gameTime);
             prevState = currentState;
-            currentState = Keyboard.GetState();
+            //currentState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -151,139 +192,11 @@ namespace MazeProjectGameDev
 
 
 
-            if ((GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.D)) && playerNode.getRight() != null)
-            {
-                if (currentState.IsKeyDown(Keys.D) == !prevState.IsKeyDown(Keys.D))
-                {
-                    isButtonPressed = true;
-
-                    // if the player is at index 9, 19, 29,
-                    /*if (playerNode.getRight() == maze.shortestPath.First())
-                    {
-                        maze.shortestPath.Pop();
-                    }
-                    else
-                    {
-                        maze.shortestPath.Push(playerNode);
-                    }*/
-                    if (playerIndex + 1 == maze.locations[0])
-                    {
-                        maze.locations.RemoveAt(0);
-                    }
-                    else
-                    {
-                        maze.locations.Insert(0, playerIndex);
-                    }
-                    playerNode = playerNode.getRight();
-                    playerIndex += 1;
-                    m_myBox.X += mazeRectangle.Width / GameWidth;
-
-                }
-
-
-            }
-
-            if ((GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.A)) && playerNode.getLeft() != null)
-            {
-                if (currentState.IsKeyDown(Keys.A) == !prevState.IsKeyDown(Keys.A))
-                {
-                    isButtonPressed = true;
-                    if (maze.shortestPath.Any()) 
-                    {
-                        /*if (playerNode.getLeft() == maze.shortestPath.First())
-                        {
-                            maze.shortestPath.Pop();
-                        }
-                        else
-                        {
-                            maze.shortestPath.Push(playerNode);
-                        }*/
-                        if (playerIndex - 1 == maze.locations[0])
-                        {
-                            maze.locations.RemoveAt(0);
-                        }
-                        else
-                        {
-                            maze.locations.Insert(0, playerIndex);
-                        }
-                        playerNode = playerNode.getLeft();
-                        playerIndex -= 1;
-                        m_myBox.X -= mazeRectangle.Width / GameWidth;
-
-                    }
-
-                }
-
-            }
-
-            if ((GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.W)) && playerNode.getTop() != null)
-
-            {
-                if (currentState.IsKeyDown(Keys.W) == !prevState.IsKeyDown(Keys.W))
-                {
-                    isButtonPressed = true;
-                    /*  if (playerNode.getTop() == maze.shortestPath.First())
-                  {
-                      maze.shortestPath.Pop();
-                  }
-                  else
-                  {
-                      maze.shortestPath.Push(playerNode);
-                  }*/
-                    if (playerIndex - GameWidth == maze.locations[0])
-                    {
-                        maze.locations.RemoveAt(0);
-                    }
-                    else
-                    {
-                        maze.locations.Insert(0, playerIndex);
-                    }
-                    playerNode = playerNode.getTop();
-                    playerIndex -= GameWidth;
-                    m_myBox.Y -= mazeRectangle.Height / GameHeight;
-
-
-                }
-
-
-            }
-            if ((GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.S)) && playerNode.getBottom() != null)
-
-            {
-                if (currentState.IsKeyDown(Keys.S) == !prevState.IsKeyDown(Keys.S))
-                {
-                    /*if (playerNode.getBottom() == maze.shortestPath.First())
-                    {
-                        maze.shortestPath.Pop();
-                    }
-                    else
-                    {
-                        maze.shortestPath.Push(playerNode);
-                    }*/
-
-                    if (playerIndex + GameWidth == maze.locations[0])
-                    {
-                        maze.locations.RemoveAt(0);
-                    }
-                    else
-                    {
-                        maze.locations.Insert(0, playerIndex);
-                    }
-                    isButtonPressed = true;
-                    playerNode = playerNode.getBottom();
-                    playerIndex += GameWidth;
-                    m_myBox.Y += mazeRectangle.Height / GameHeight;
-
-                }
-
-            }
-
 
             if (Keyboard.GetState().IsKeyDown (Keys.H)) 
             {
                 GameWidth = 10;
                 GameHeight = 10;
-                GameSize = 100;
                 rectangles.Clear();
                 for (int i = 0; i < GameHeight; i++)
                 {
@@ -317,34 +230,10 @@ namespace MazeProjectGameDev
             m_spriteBatch.Begin();
             for (int i = 0; i < rectangles.Count; i++)
             {
-                /*if (playerNode == maze.nodes[i])
-                {
-                    Vector2 textureOrigin = new Vector2(playerTexture.Width / 2f, playerTexture.Height / 2f);
-
-                    // Calculate the position to center the texture within the rectangle
-                    Vector2 texturePosition = new Vector2(
-                        m_myBox.X + m_myBox.Width / 2f - textureOrigin.X,
-                        m_myBox.Y + m_myBox.Height / 2f - textureOrigin.Y
-                    );
-
-                    // Draw the texture centered on the rectangle
-                    //m_spriteBatch.Draw(playerTexture, m_myBox, null, Color.White, 0f, textureOrigin,SpriteEffects.None, 0f);
-                    m_spriteBatch.Draw(playerTexture, m_myBox, Color.White);
-
-
-                }*/
+               
                 if (i < rectangles.Count - 1)
                 {
-                    /*if (maze.shortestPath.Contains(maze.nodes[i]))
-                    {
-
-                        //m_spriteBatch.Draw(backGroundBoth, rectangles[i], Color.Blue);
-                        m_spriteBatch.Draw(backGroundDefault, rectangles[i], Color.White);
-
-
-                    }*/
-                    /*else
-                    {*/
+                   
                         if (maze.nodes[i].getBottom() == null && maze.nodes[i].getRight() == null)
                         {
                             m_spriteBatch.Draw(backGroundBoth, rectangles[i], Color.White);
@@ -364,7 +253,6 @@ namespace MazeProjectGameDev
 
                         }
 
-                    /*}*/
                 }
                 else
                 {
@@ -375,75 +263,125 @@ namespace MazeProjectGameDev
             }
 
 
-            for(int i = 0; i < maze.locations.Count; i++)
+            if (showShortestPath)
             {
-                Console.WriteLine("Yeah");
-                Rectangle tempRec = new Rectangle(rectangles[maze.locations[i]].X + mazeRectangle.Width / GameWidth / 4, rectangles[maze.locations[i]].Y + mazeRectangle.Height / GameWidth / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
-                m_spriteBatch.Draw(shortestPathTexture, tempRec, Color.White);
+                for (int i = 0; i < maze.locations.Count; i++)
+                {
+                    Rectangle tempRec = new Rectangle(rectangles[maze.locations[i]].X + mazeRectangle.Width / GameWidth / 4, rectangles[maze.locations[i]].Y + mazeRectangle.Height / GameWidth / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
+                    m_spriteBatch.Draw(shortestPathTexture, tempRec, Color.White);
 
 
+                }
             }
+
+
+            
 
             // Render the player:
             m_spriteBatch.Draw(playerTexture, m_myBox, Color.White);
 
 
 
-            /*for (int i = 0; i < rectangles.Count; i++)
-            {
-                int x = rectangles[i].X + rectangles[i].Width;
-                int y = rectangles[i].Y + rectangles[i].Height;
-
-                if (maze.nodes[i].getRight() == null)
-                {
-
-                    Vector2 startPoint = new Vector2(x, y);
-                    Vector2 endPoint = new Vector2(x, y - rectangles[i].Height);
-                    Vector2 edge = endPoint - startPoint;
-                    float angle = (float)Math.Atan2(edge.Y, edge.X);
-
-                    m_spriteBatch.Draw(
-                        pixel,
-                        new Rectangle(x, y, (int)edge.Length(), 1),
-                        null,
-                        Color.Black,
-                            angle,
-                            new Vector2(0, 0),
-                            SpriteEffects.None,
-                            0
-                       );
-                }
-
-                if (maze.nodes[i].getBottom() == null)
-                {
-
-                    Vector2 startPoint = new Vector2(x, y);
-                    Vector2 endPoint = new Vector2(x - rectangles[i].Width, y);
-                    Vector2 edge = endPoint - startPoint;
-                    float angle = (float)Math.Atan2(edge.Y, edge.X);
-
-                    m_spriteBatch.Draw(
-                        pixel,
-                        new Rectangle(x, y, (int)edge.Length(), 1),
-                        null,
-                        Color.Black,
-                            angle,
-                            new Vector2(0, 0),
-                            SpriteEffects.None,
-                            0
-                       );
-                }
-
-
-
-
-            }*/
-
-            //m_spriteBatch.Draw(playerTexture, mazeRectangle, Color.White);
+            
 
 
             m_spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        private void onMoveUp(GameTime gameTime)
+        {
+            if (playerNode.getTop() != null)
+            {
+                if (playerIndex - GameWidth == maze.locations[0])
+                {
+                    maze.locations.RemoveAt(0);
+                }
+                else
+                {
+                    maze.locations.Insert(0, playerIndex);
+                }
+                playerNode = playerNode.getTop();
+                playerIndex -= GameWidth;
+                m_myBox.Y -= mazeRectangle.Height / GameHeight;
+                playerNode.isPlayerVisited = true;
+
+            }
+        }
+        private void onMoveDown(GameTime gameTime)
+        {
+            if (playerNode.getBottom() != null)
+            {
+
+                if (playerIndex + GameWidth == maze.locations[0])
+                {
+                    maze.locations.RemoveAt(0);
+                }
+                else
+                {
+                    maze.locations.Insert(0, playerIndex);
+                }
+                isButtonPressed = true;
+                playerNode = playerNode.getBottom();
+                playerIndex += GameWidth;
+                m_myBox.Y += mazeRectangle.Height / GameHeight;
+                playerNode.isPlayerVisited = true;
+
+            }
+        }
+        private void onMoveLeft(GameTime gameTime)
+        {
+            if (playerNode.getLeft() != null)
+            {
+                if (playerIndex - 1 == maze.locations[0])
+                {
+                    maze.locations.RemoveAt(0);
+                }
+                else
+                {
+                    maze.locations.Insert(0, playerIndex);
+                }
+                playerNode = playerNode.getLeft();
+                playerIndex -= 1;
+                m_myBox.X -= mazeRectangle.Width / GameWidth;
+                playerNode.isPlayerVisited = true;
+
+            }
+        }
+        private void onMoveRight(GameTime gameTime)
+        {
+            if (playerNode.getRight() != null)
+            {
+
+                if (playerIndex + 1 == maze.locations[0])
+                {
+                    maze.locations.RemoveAt(0);
+                }
+                else
+                {
+                    maze.locations.Insert(0, playerIndex);
+                }
+                playerNode = playerNode.getRight();
+                playerIndex += 1;
+                m_myBox.X += mazeRectangle.Width / GameWidth;
+                playerNode.isPlayerVisited = true;
+
+            }
+        }
+        private void hintToggle(GameTime gameTime)
+        { 
+            this.giveHint = !this.giveHint;
+        }
+        private void breadCrumbsToggle(GameTime gameTime)
+        { 
+            this.giveBreadCrumbs = !this.giveBreadCrumbs;
+        }
+
+        private void shortestPathToggle(GameTime gameTime)
+        { 
+            this.showShortestPath = !this.showShortestPath;
+        }
+
+        
     }
 }

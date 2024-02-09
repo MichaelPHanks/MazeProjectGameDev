@@ -21,6 +21,7 @@ namespace MazeProjectGameDev
             private GraphNode left;
             private GraphNode right;
             public GraphNode parent;
+            public bool isPlayerVisited = false;
             public int location;
             public bool isEnd;
             public bool isVisited;
