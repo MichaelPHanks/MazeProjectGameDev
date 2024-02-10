@@ -82,16 +82,16 @@ namespace MazeProjectGameDev
         protected override void Initialize()
         {
 
-            /*m_graphics.PreferredBackBufferWidth = 1920;
+            m_graphics.PreferredBackBufferWidth = 1920;
             m_graphics.PreferredBackBufferHeight = 1080;
-            m_graphics.ApplyChanges();*/
+            m_graphics.ApplyChanges();
             // TODO: Add your initialization logic here
             isPlaying = false;
             giveBreadCrumbs = false;
             giveHint = false;
             showShortestPath = false;
             rectangles = new List<Rectangle>();
-            mazeRectangle = new Rectangle(m_graphics.PreferredBackBufferWidth / 8, m_graphics.PreferredBackBufferHeight / 8, m_graphics.PreferredBackBufferWidth - m_graphics.PreferredBackBufferWidth / 4, m_graphics.PreferredBackBufferHeight - m_graphics.PreferredBackBufferHeight / 4);
+            mazeRectangle = new Rectangle(m_graphics.PreferredBackBufferWidth / 4, m_graphics.PreferredBackBufferHeight / 4, m_graphics.PreferredBackBufferWidth - m_graphics.PreferredBackBufferWidth / 2, m_graphics.PreferredBackBufferHeight - m_graphics.PreferredBackBufferHeight / 2);
             playerNode = new GraphNode();
 
             /*GameWidth = 20;
@@ -132,20 +132,12 @@ namespace MazeProjectGameDev
             m_inputKeyboard.registerCommand(Keys.H, true, new IInputDevice.CommandDelegate(hintToggle));
             m_inputKeyboard.registerCommand(Keys.B, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
             m_inputKeyboard.registerCommand(Keys.F1, true, new IInputDevice.CommandDelegate(create5By5Game));
-
             m_inputKeyboard.registerCommand(Keys.F2, true, new IInputDevice.CommandDelegate(create10By10Game));
-
             m_inputKeyboard.registerCommand(Keys.F3, true, new IInputDevice.CommandDelegate(create15By15Game));
             m_inputKeyboard.registerCommand(Keys.F4, true, new IInputDevice.CommandDelegate(create20By20Game));
-
             m_inputKeyboard.registerCommand(Keys.F5, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
             m_inputKeyboard.registerCommand(Keys.F6, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
-
-
-
             m_inputKeyboard.registerCommand(Keys.P, true, new IInputDevice.CommandDelegate(shortestPathToggle));
-
-
 
 
             m_inputController = new ControllerInput();
@@ -158,6 +150,7 @@ namespace MazeProjectGameDev
             m_inputController.registerCommand(Buttons.LeftTrigger, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
 
             m_inputController.registerCommand(Buttons.RightTrigger, true, new IInputDevice.CommandDelegate(shortestPathToggle));
+
 
 
 
@@ -229,24 +222,7 @@ namespace MazeProjectGameDev
 
 
 
-            if (Keyboard.GetState().IsKeyDown (Keys.H)) 
-            {
-                GameWidth = 10;
-                GameHeight = 10;
-                rectangles.Clear();
-                for (int i = 0; i < GameHeight; i++)
-                {
-                    for (int j = 0; j < GameWidth; j++)
-                    {
-                        rectangles.Add(new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth * j, m_graphics.PreferredBackBufferHeight / GameHeight * i, m_graphics.PreferredBackBufferWidth / GameWidth, m_graphics.PreferredBackBufferHeight / GameHeight));
-                    }
-                }
-                maze = new Maze(10,10, 0);
-                playerNode = maze.nodes[0];
-                m_myBox = new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth , m_graphics.PreferredBackBufferHeight / GameWidth, m_graphics.PreferredBackBufferWidth / GameWidth, m_graphics.PreferredBackBufferHeight / GameHeight);
-                playerIndex = 0;
-            }
-
+            
 
 
 
@@ -334,7 +310,7 @@ namespace MazeProjectGameDev
             else
             {
 
-
+                // Render maze
                 for (int i = 0; i < rectangles.Count; i++)
                 {
 
@@ -369,7 +345,7 @@ namespace MazeProjectGameDev
 
                 }
 
-
+                // Render shortest path
                 if (showShortestPath)
                 {
                     for (int i = 0; i < maze.locations.Count; i++)
@@ -381,11 +357,33 @@ namespace MazeProjectGameDev
                     }
                 }
 
+                // Render hint
+                if (giveHint) 
+                {
+                    Rectangle tempRec = new Rectangle(rectangles[maze.locations[0]].X + mazeRectangle.Width / GameWidth / 4, rectangles[maze.locations[0]].Y + mazeRectangle.Height / GameWidth / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
+                    m_spriteBatch.Draw(shortestPathTexture, tempRec, Color.White);
+
+                }
 
 
 
-                // Render the player:
+
+                // Render the player
                 m_spriteBatch.Draw(playerTexture, m_myBox, Color.White);
+
+                // Render controls
+                float scale = m_graphics.PreferredBackBufferWidth * 0.001f;
+                Vector2 string2Size = m_font1.MeasureString(mainString) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    mainString,
+                    new Vector2(m_graphics.PreferredBackBufferWidth / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
             }
 
 
