@@ -173,7 +173,7 @@ namespace MazeProjectGameDev
             backGroundRight = this.Content.Load<Texture2D>("backgroundRight");
             backGroundDefault = this.Content.Load<Texture2D>("mazeBackgroundNone");
             endTexture = this.Content.Load<Texture2D>("IMG_2092");
-            playerTexture = this.Content.Load<Texture2D>("saulgoodman");
+            playerTexture = this.Content.Load<Texture2D>("pixil-frame-0 (3)");
             shortestPathTexture = this.Content.Load<Texture2D>("pixilMoney");
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
             
@@ -243,7 +243,7 @@ namespace MazeProjectGameDev
                 }
                 maze = new Maze(10,10, 0);
                 playerNode = maze.nodes[0];
-                m_myBox = new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth / 4, m_graphics.PreferredBackBufferHeight / GameWidth / 4, m_graphics.PreferredBackBufferWidth / GameWidth / 2, m_graphics.PreferredBackBufferHeight / GameHeight / 2);
+                m_myBox = new Rectangle(m_graphics.PreferredBackBufferWidth / GameWidth , m_graphics.PreferredBackBufferHeight / GameWidth, m_graphics.PreferredBackBufferWidth / GameWidth, m_graphics.PreferredBackBufferHeight / GameHeight);
                 playerIndex = 0;
             }
 
