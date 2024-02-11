@@ -36,7 +36,7 @@ namespace MazeProjectGameDev
 
 
         private Maze maze;
-
+        private TimeSpan elapsedTime;
         private bool giveHint;
         private bool giveBreadCrumbs;
         private bool showShortestPath;
@@ -46,7 +46,7 @@ namespace MazeProjectGameDev
 
         private int playerIndex;
         private Rectangle m_myBox;
-
+        private Texture2D backgroundTexture;
         private Texture2D backGroundBoth;
         private Texture2D backGroundBottom;
         private Texture2D backGroundRight;
@@ -60,8 +60,9 @@ namespace MazeProjectGameDev
         private bool isPlaying;
         private GraphNode playerNode;
         private Rectangle mazeRectangle;
-        private Rectangle mainMenu;
+        private Rectangle mainBackground;
         private SpriteFont m_font1;
+        private Texture2D saulGoodman;
 
 
 
@@ -93,6 +94,7 @@ namespace MazeProjectGameDev
             rectangles = new List<Rectangle>();
             mazeRectangle = new Rectangle(m_graphics.PreferredBackBufferWidth / 4, m_graphics.PreferredBackBufferHeight / 4, m_graphics.PreferredBackBufferWidth - m_graphics.PreferredBackBufferWidth / 2, m_graphics.PreferredBackBufferHeight - m_graphics.PreferredBackBufferHeight / 2);
             playerNode = new GraphNode();
+            mainBackground = new Rectangle(0, 0, m_graphics.PreferredBackBufferWidth, m_graphics.PreferredBackBufferHeight);
 
             /*GameWidth = 20;
             GameHeight = 20;
@@ -168,6 +170,9 @@ namespace MazeProjectGameDev
             endTexture = this.Content.Load<Texture2D>("IMG_2092");
             playerTexture = this.Content.Load<Texture2D>("pixil-frame-0 (3)");
             shortestPathTexture = this.Content.Load<Texture2D>("pixilMoney");
+            backgroundTexture = this.Content.Load<Texture2D>("spaceBackground");
+            saulGoodman = this.Content.Load<Texture2D>("saulgoodman");
+
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
             
 
@@ -189,6 +194,8 @@ namespace MazeProjectGameDev
 
             processInput(gameTime);
             prevState = currentState;
+
+            elapsedTime += gameTime.ElapsedGameTime;
             //currentState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -240,6 +247,7 @@ namespace MazeProjectGameDev
 
             // TODO: Add your drawing code here
             m_spriteBatch.Begin();
+            m_spriteBatch.Draw(backgroundTexture, mainBackground, Color.White);
 
             if (!isPlaying)
             {
@@ -310,6 +318,10 @@ namespace MazeProjectGameDev
             else
             {
 
+                // Draw creeping saul goodman
+                Rectangle tempRectangle = mazeRectangle; tempRectangle.Y = mazeRectangle.Y - (int)(10*elapsedTime.TotalSeconds);
+                m_spriteBatch.Draw(saulGoodman, tempRectangle, Color.White);
+
                 // Render maze
                 for (int i = 0; i < rectangles.Count; i++)
                 {
@@ -367,24 +379,142 @@ namespace MazeProjectGameDev
 
 
 
-
                 // Render the player
                 m_spriteBatch.Draw(playerTexture, m_myBox, Color.White);
 
                 // Render controls
-                float scale = m_graphics.PreferredBackBufferWidth * 0.001f;
-                Vector2 string2Size = m_font1.MeasureString(mainString) * scale;
+                float scale = m_graphics.PreferredBackBufferWidth * 0.00035f;
+                Vector2 string2Size = m_font1.MeasureString("Options:") * scale;
                 m_spriteBatch.DrawString(
                     m_font1,
-                    mainString,
-                    new Vector2(m_graphics.PreferredBackBufferWidth / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4),
+                    "Options:",
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4),
                     Color.Black,
                     0,
                     Vector2.Zero,
                     scale,
                     SpriteEffects.None,
                     0);
-            }
+
+                string2Size = m_font1.MeasureString(newGame5) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    newGame5,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(newGame10) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    newGame10,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 2 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(newGame15) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    newGame15,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 3 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(newGame20) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    newGame20,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 4 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+
+
+
+
+
+
+                string2Size = m_font1.MeasureString(highScore) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    highScore,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 6 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(credits) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    credits,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 7 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(shortestPathString) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    shortestPathString,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 9 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(hintString) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    hintString,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 10 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                string2Size = m_font1.MeasureString(breadcrumbsString)* scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    breadcrumbsString,
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 11 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+
+                string2Size = m_font1.MeasureString(elapsedTime.Seconds.ToString()) * scale;
+                m_spriteBatch.DrawString(
+                    m_font1,
+                    elapsedTime.Seconds.ToString(),
+                    new Vector2(mazeRectangle.X / 2 - string2Size.X / 2, m_graphics.PreferredBackBufferHeight / 4 + 12 * string2Size.Y / 1.25f),
+                    Color.Black,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+            
+        }
 
 
 

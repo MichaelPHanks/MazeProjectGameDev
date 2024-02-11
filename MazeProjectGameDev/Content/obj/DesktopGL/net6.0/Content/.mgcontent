@@ -15,10 +15,12 @@
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (2).png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (3).png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixilMoney.png</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/spaceBackground.jpg</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/square.png</File>
   </SourceFiles>
   <DestFiles>
     <File>saulgoodman.jpg</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
