@@ -4,22 +4,22 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/../../../../../OneDrive/Desktop/saulgoodman.jpg</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundBoth.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundBottom.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundMaze.jpg</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/backgroundRight.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/Fonts/MainFont.spritefont</File>
-    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/IMG_2092.JPG</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/mazeBackgroundNone.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (2).png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (3).png</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (4).png</File>
+    <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixil-frame-0 (5).png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/pixilMoney.png</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/spaceBackground.jpg</File>
     <File>C:/Users/mhank/source/repos/MazeProjectGameDev/MazeProjectGameDev/Content/square.png</File>
   </SourceFiles>
   <DestFiles>
-    <File>saulgoodman.jpg</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

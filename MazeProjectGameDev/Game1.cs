@@ -40,10 +40,11 @@ namespace MazeProjectGameDev
         private bool giveHint;
         private bool giveBreadCrumbs;
         private bool showShortestPath;
+        private bool mazeCompleted;
+        private bool displayScores;
 
         private List<Rectangle> rectangles;
         private List<bool> isMouseOn;
-
         private int playerIndex;
         private Rectangle m_myBox;
         private Texture2D backgroundTexture;
@@ -51,8 +52,6 @@ namespace MazeProjectGameDev
         private Texture2D backGroundBottom;
         private Texture2D backGroundRight;
         private Texture2D backGroundDefault;
-        private KeyboardState prevState;
-        private KeyboardState currentState;
         private Texture2D playerTexture;
         private Texture2D shortestPathTexture;
         private KeyboardInput m_inputKeyboard;
@@ -63,7 +62,8 @@ namespace MazeProjectGameDev
         private Rectangle mainBackground;
         private SpriteFont m_font1;
         private Texture2D saulGoodman;
-
+        private HighScores leaderboard;
+        private bool displayCredits;
 
 
         private int GameWidth;
@@ -82,7 +82,10 @@ namespace MazeProjectGameDev
 
         protected override void Initialize()
         {
-
+            displayCredits = false;
+            displayScores = false;
+            mazeCompleted = false;
+            leaderboard = new HighScores();
             m_graphics.PreferredBackBufferWidth = 1920;
             m_graphics.PreferredBackBufferHeight = 1080;
             m_graphics.ApplyChanges();
@@ -96,37 +99,16 @@ namespace MazeProjectGameDev
             playerNode = new GraphNode();
             mainBackground = new Rectangle(0, 0, m_graphics.PreferredBackBufferWidth, m_graphics.PreferredBackBufferHeight);
 
-            /*GameWidth = 20;
-            GameHeight = 20;
-            playerIndex = 0;
-            mainMenu = new Rectangle(0,0, m_graphics.PreferredBackBufferWidth, m_graphics.PreferredBackBufferHeight);
-            mazeRectangle = new Rectangle(m_graphics.PreferredBackBufferWidth / 8, m_graphics.PreferredBackBufferHeight / 8, m_graphics.PreferredBackBufferWidth - m_graphics.PreferredBackBufferWidth / 4, m_graphics.PreferredBackBufferHeight - m_graphics.PreferredBackBufferHeight / 4);
-            rectangles = new List<Rectangle>();
-            isMouseOn = new List<bool>();
-            m_myBox = new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth / 4, mazeRectangle.Y + mazeRectangle.Height / GameHeight / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
-            
-            for (int i = 0; i < GameHeight; i++)
-            {
-                for (int j = 0; j < GameWidth; j++)
-                {
-                    isMouseOn.Add(false);
-                    rectangles.Add(new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth * j, mazeRectangle.Y + mazeRectangle.Height / GameHeight * i, mazeRectangle.Width / GameWidth, mazeRectangle.Height / GameHeight));
-                }
-            }
-            maze = new Maze(GameWidth, GameHeight, 0);
-
-
-            
-
-            playerNode = maze.nodes[0];
-            playerNode.isPlayerVisited = true;*/
-
 
             m_inputKeyboard = new KeyboardInput();
             m_inputKeyboard.registerCommand(Keys.W, true, new IInputDevice.CommandDelegate(onMoveUp));
             m_inputKeyboard.registerCommand(Keys.S, true, new IInputDevice.CommandDelegate(onMoveDown));
             m_inputKeyboard.registerCommand(Keys.A, true, new IInputDevice.CommandDelegate(onMoveLeft));
             m_inputKeyboard.registerCommand(Keys.D, true, new IInputDevice.CommandDelegate(onMoveRight));
+            m_inputKeyboard.registerCommand(Keys.I, true, new IInputDevice.CommandDelegate(onMoveUp));
+            m_inputKeyboard.registerCommand(Keys.K, true, new IInputDevice.CommandDelegate(onMoveDown));
+            m_inputKeyboard.registerCommand(Keys.J, true, new IInputDevice.CommandDelegate(onMoveLeft));
+            m_inputKeyboard.registerCommand(Keys.L, true, new IInputDevice.CommandDelegate(onMoveRight));
             m_inputKeyboard.registerCommand(Keys.Up, true, new IInputDevice.CommandDelegate(onMoveUp));
             m_inputKeyboard.registerCommand(Keys.Down, true, new IInputDevice.CommandDelegate(onMoveDown));
             m_inputKeyboard.registerCommand(Keys.Left, true, new IInputDevice.CommandDelegate(onMoveLeft));
@@ -137,8 +119,8 @@ namespace MazeProjectGameDev
             m_inputKeyboard.registerCommand(Keys.F2, true, new IInputDevice.CommandDelegate(create10By10Game));
             m_inputKeyboard.registerCommand(Keys.F3, true, new IInputDevice.CommandDelegate(create15By15Game));
             m_inputKeyboard.registerCommand(Keys.F4, true, new IInputDevice.CommandDelegate(create20By20Game));
-            m_inputKeyboard.registerCommand(Keys.F5, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
-            m_inputKeyboard.registerCommand(Keys.F6, true, new IInputDevice.CommandDelegate(breadCrumbsToggle));
+            m_inputKeyboard.registerCommand(Keys.F5, true, new IInputDevice.CommandDelegate(highScoreToggle));
+            m_inputKeyboard.registerCommand(Keys.F6, true, new IInputDevice.CommandDelegate(creditsToggle));
             m_inputKeyboard.registerCommand(Keys.P, true, new IInputDevice.CommandDelegate(shortestPathToggle));
 
 
@@ -167,11 +149,9 @@ namespace MazeProjectGameDev
             backGroundBottom = this.Content.Load<Texture2D>("backgroundBottom");
             backGroundRight = this.Content.Load<Texture2D>("backgroundRight");
             backGroundDefault = this.Content.Load<Texture2D>("mazeBackgroundNone");
-            endTexture = this.Content.Load<Texture2D>("IMG_2092");
+            endTexture = this.Content.Load<Texture2D>("pixil-frame-0 (5)");
             playerTexture = this.Content.Load<Texture2D>("pixil-frame-0 (3)");
-            shortestPathTexture = this.Content.Load<Texture2D>("pixilMoney");
-            backgroundTexture = this.Content.Load<Texture2D>("spaceBackground");
-            saulGoodman = this.Content.Load<Texture2D>("saulgoodman");
+            shortestPathTexture = this.Content.Load<Texture2D>("pixil-frame-0 (4)");
 
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
             
@@ -185,6 +165,7 @@ namespace MazeProjectGameDev
         /// </summary>
         private void processInput(GameTime gameTime)
         {
+
             m_inputKeyboard.Update(gameTime);
             m_inputController.Update(gameTime);
         }
@@ -193,9 +174,7 @@ namespace MazeProjectGameDev
         {
 
             processInput(gameTime);
-            prevState = currentState;
 
-            elapsedTime += gameTime.ElapsedGameTime;
             //currentState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -224,7 +203,21 @@ namespace MazeProjectGameDev
 
             }
 
-
+            if (isPlaying)
+            {
+                if (maze.locations.Count == 0)
+                {
+                    if (!mazeCompleted)
+                    {
+                        mazeCompleted = true;
+                        leaderboard.addHighScore(GameWidth.ToString() + "X" + GameHeight.ToString(), (100 - (int)elapsedTime.TotalSeconds));
+                    }
+                }
+                else
+                {
+                    elapsedTime += gameTime.ElapsedGameTime;
+                }
+            }
 
 
 
@@ -247,7 +240,6 @@ namespace MazeProjectGameDev
 
             // TODO: Add your drawing code here
             m_spriteBatch.Begin();
-            m_spriteBatch.Draw(backgroundTexture, mainBackground, Color.White);
 
             if (!isPlaying)
             {
@@ -318,9 +310,7 @@ namespace MazeProjectGameDev
             else
             {
 
-                // Draw creeping saul goodman
-                Rectangle tempRectangle = mazeRectangle; tempRectangle.Y = mazeRectangle.Y - (int)(10*elapsedTime.TotalSeconds);
-                m_spriteBatch.Draw(saulGoodman, tempRectangle, Color.White);
+                
 
                 // Render maze
                 for (int i = 0; i < rectangles.Count; i++)
@@ -351,6 +341,8 @@ namespace MazeProjectGameDev
                     }
                     else
                     {
+                        m_spriteBatch.Draw(backGroundBoth, rectangles[i], Color.White);
+
                         m_spriteBatch.Draw(endTexture, rectangles[i], Color.Gray);
 
                     }
@@ -370,12 +362,16 @@ namespace MazeProjectGameDev
                 }
 
                 // Render hint
-                if (giveHint) 
+                if (giveHint)
                 {
-                    Rectangle tempRec = new Rectangle(rectangles[maze.locations[0]].X + mazeRectangle.Width / GameWidth / 4, rectangles[maze.locations[0]].Y + mazeRectangle.Height / GameWidth / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
-                    m_spriteBatch.Draw(shortestPathTexture, tempRec, Color.White);
-
+                    if (maze.locations.Count > 0)
+                    {
+                        Rectangle tempRec = new Rectangle(rectangles[maze.locations[0]].X + mazeRectangle.Width / GameWidth / 4, rectangles[maze.locations[0]].Y + mazeRectangle.Height / GameWidth / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
+                        m_spriteBatch.Draw(shortestPathTexture, tempRec, Color.White);
+                    }
                 }
+
+                
 
 
 
@@ -513,7 +509,30 @@ namespace MazeProjectGameDev
                     scale,
                     SpriteEffects.None,
                     0);
-            
+
+
+
+                // Render high scores
+                if (displayScores)
+                {
+
+                    for (int i = 0; i < leaderboard.highScores.Count; i++)
+                    {
+                        float scale1 = m_graphics.PreferredBackBufferWidth * 0.00035f;
+                        Vector2 stringSize = m_font1.MeasureString(leaderboard.highScores[i].getGameSize() + " -- "+ leaderboard.highScores[i].getScore()) * scale1;
+                        m_spriteBatch.DrawString(
+                            m_font1,
+                            leaderboard.highScores[i].getGameSize() + " -- " +  leaderboard.highScores[i].getScore(),
+                            new Vector2(m_graphics.PreferredBackBufferWidth * 0.75f + stringSize.X / 2, m_graphics.PreferredBackBufferHeight / 4 + (i+3) * stringSize.Y / 1.25f ),
+                            Color.Black,
+                            0,
+                            Vector2.Zero,
+                            scale1,
+                            SpriteEffects.None,
+                            0);
+                    }
+                }
+                    
         }
 
 
@@ -527,79 +546,101 @@ namespace MazeProjectGameDev
 
         private void onMoveUp(GameTime gameTime)
         {
-            if (playerNode.getTop() != null && isPlaying)
+            if (!mazeCompleted)
             {
-                if (playerIndex - GameWidth == maze.locations[0])
+                if (playerNode.getTop() != null && isPlaying)
                 {
-                    maze.locations.RemoveAt(0);
-                }
-                else
-                {
-                    maze.locations.Insert(0, playerIndex);
-                }
-                playerNode = playerNode.getTop();
-                playerIndex -= GameWidth;
-                m_myBox.Y -= mazeRectangle.Height / GameHeight;
-                playerNode.isPlayerVisited = true;
 
+
+
+                    if (playerIndex - GameWidth == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
+                    }
+                    playerNode = playerNode.getTop();
+                    playerIndex -= GameWidth;
+                    m_myBox.Y -= mazeRectangle.Height / GameHeight;
+                    playerNode.isPlayerVisited = true;
+
+
+                }
             }
         }
         private void onMoveDown(GameTime gameTime)
         {
-            if (playerNode.getBottom() != null && isPlaying)
+            if (!mazeCompleted)
             {
-
-                if (playerIndex + GameWidth == maze.locations[0])
+                if (playerNode.getBottom() != null && isPlaying)
                 {
-                    maze.locations.RemoveAt(0);
-                }
-                else
-                {
-                    maze.locations.Insert(0, playerIndex);
-                }
-                playerNode = playerNode.getBottom();
-                playerIndex += GameWidth;
-                m_myBox.Y += mazeRectangle.Height / GameHeight;
-                playerNode.isPlayerVisited = true;
 
+
+
+                    if (playerIndex + GameWidth == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
+                    }
+                    playerNode = playerNode.getBottom();
+                    playerIndex += GameWidth;
+                    m_myBox.Y += mazeRectangle.Height / GameHeight;
+                    playerNode.isPlayerVisited = true;
+
+                }
             }
         }
         private void onMoveLeft(GameTime gameTime)
         {
-            if (playerNode.getLeft() != null && isPlaying)
+            if (!mazeCompleted)
             {
-                if (playerIndex - 1 == maze.locations[0])
+                if (playerNode.getLeft() != null && isPlaying)
                 {
-                    maze.locations.RemoveAt(0);
-                }
-                else
-                {
-                    maze.locations.Insert(0, playerIndex);
-                }
-                playerNode = playerNode.getLeft();
-                playerIndex -= 1;
-                m_myBox.X -= mazeRectangle.Width / GameWidth;
-                playerNode.isPlayerVisited = true;
 
+
+                    if (playerIndex - 1 == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
+                    }
+                    playerNode = playerNode.getLeft();
+                    playerIndex -= 1;
+                    m_myBox.X -= mazeRectangle.Width / GameWidth;
+                    playerNode.isPlayerVisited = true;
+
+                }
             }
         }
         private void onMoveRight(GameTime gameTime)
         {
-            if (playerNode.getRight() != null && isPlaying)
+            if (!mazeCompleted)
             {
+                if (playerNode.getRight() != null && isPlaying)
+                {
 
-                if (playerIndex + 1 == maze.locations[0])
-                {
-                    maze.locations.RemoveAt(0);
+
+
+                    if (playerIndex + 1 == maze.locations[0])
+                    {
+                        maze.locations.RemoveAt(0);
+                    }
+                    else
+                    {
+                        maze.locations.Insert(0, playerIndex);
+                    }
+                    playerNode = playerNode.getRight();
+                    playerIndex += 1;
+                    m_myBox.X += mazeRectangle.Width / GameWidth;
+                    playerNode.isPlayerVisited = true;
                 }
-                else
-                {
-                    maze.locations.Insert(0, playerIndex);
-                }
-                playerNode = playerNode.getRight();
-                playerIndex += 1;
-                m_myBox.X += mazeRectangle.Width / GameWidth;
-                playerNode.isPlayerVisited = true;
 
             }
         }
@@ -619,6 +660,8 @@ namespace MazeProjectGameDev
 
         private void create5By5Game(GameTime gameTime)
         {
+            mazeCompleted = false;
+
             isPlaying = true;
             GameWidth = 5;
             GameHeight = 5;
@@ -634,9 +677,13 @@ namespace MazeProjectGameDev
             playerNode = maze.nodes[0];
             m_myBox = new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth / 4, mazeRectangle.Y + mazeRectangle.Height / GameHeight / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
             playerIndex = 0;
+            elapsedTime = new TimeSpan();
+
         }
         private void create10By10Game(GameTime gameTime)
         {
+            mazeCompleted = false;
+
             isPlaying = true;
             isPlaying = true;
             GameWidth = 10;
@@ -653,10 +700,13 @@ namespace MazeProjectGameDev
             playerNode = maze.nodes[0];
             m_myBox = new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth / 4, mazeRectangle.Y + mazeRectangle.Height / GameHeight / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
             playerIndex = 0;
+            elapsedTime = new TimeSpan();
 
         }
         private void create15By15Game(GameTime gameTime)
         {
+            mazeCompleted = false;
+
             isPlaying = true;
             isPlaying = true;
             GameWidth = 15;
@@ -673,10 +723,13 @@ namespace MazeProjectGameDev
             playerNode = maze.nodes[0];
             m_myBox = new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth / 4, mazeRectangle.Y + mazeRectangle.Height / GameHeight / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
             playerIndex = 0;
+            elapsedTime = new TimeSpan();
 
         }
         private void create20By20Game(GameTime gameTime)
         {
+            mazeCompleted = false;
+
             isPlaying = true;
             isPlaying = true;
             GameWidth = 20;
@@ -693,7 +746,17 @@ namespace MazeProjectGameDev
             playerNode = maze.nodes[0];
             m_myBox = new Rectangle(mazeRectangle.X + mazeRectangle.Width / GameWidth / 4, mazeRectangle.Y + mazeRectangle.Height / GameHeight / 4, mazeRectangle.Width / GameWidth / 2, mazeRectangle.Height / GameHeight / 2);
             playerIndex = 0;
+            elapsedTime = new TimeSpan();
 
+        }
+        private void highScoreToggle(GameTime gameTime)
+        { 
+            displayScores = !displayScores;
+        }
+
+        private void creditsToggle(GameTime gameTime)
+        {
+            displayCredits = !displayCredits;
         }
 
 

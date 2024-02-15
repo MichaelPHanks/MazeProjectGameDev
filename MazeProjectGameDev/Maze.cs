@@ -74,7 +74,7 @@ namespace MazeProjectGameDev
         public Stack<GraphNode> shortestPath;
         public List<GraphNode> nodes = new List<GraphNode>();
         public List<int> locations = new List<int>();
-        public List<Edges> edges2 = new List<Edges>();
+        public List<Edges> edges = new List<Edges>();
         
 
         private int sizeX;
@@ -103,12 +103,12 @@ namespace MazeProjectGameDev
             {
                 if (i + sizeX < sizeX * sizeY)
                 {
-                    edges2.Add(new Edges(i, i + sizeX));
+                    edges.Add(new Edges(i, i + sizeX));
 
                 }
                 if ((i + 1) % sizeX != 0 || i == 0)
                 {
-                    edges2.Add(new Edges(i, i + 1));
+                    edges.Add(new Edges(i, i + 1));
 
                 }
             }
@@ -217,6 +217,7 @@ namespace MazeProjectGameDev
 
         }
 
+        // Fischer-Yates shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         static void ShuffleList<T>(List<T> list)
         {
             Random random = new Random();
@@ -239,26 +240,26 @@ namespace MazeProjectGameDev
 
             DisjointSet set = new DisjointSet(sizeX, sizeY);
 
-            ShuffleList(edges2);
+            ShuffleList(edges);
 
-            for (int i = 0; i < edges2.Count; i++)
+            for (int i = 0; i < edges.Count; i++)
             {
-                if (set.find(edges2[i].from) != set.find(edges2[i].to))
+                if (set.find(edges[i].from) != set.find(edges[i].to))
                 {
 
-                    int difference = Math.Abs(edges2[i].to - edges2[i].from);
+                    int difference = Math.Abs(edges[i].to - edges[i].from);
 
                     if (difference % sizeX == 0)
                     {
-                        nodes[edges2[i].from].addBottom(nodes[edges2[i].to]);
-                        nodes[edges2[i].to].addTop(nodes[edges2[i].from]);
+                        nodes[edges[i].from].addBottom(nodes[edges[i].to]);
+                        nodes[edges[i].to].addTop(nodes[edges[i].from]);
                     }
                     else
                     {
-                        nodes[edges2[i].from].addRight(nodes[edges2[i].to]);
-                        nodes[edges2[i].to].addLeft(nodes[edges2[i].from]);
+                        nodes[edges[i].from].addRight(nodes[edges[i].to]);
+                        nodes[edges[i].to].addLeft(nodes[edges[i].from]);
                     }
-                    set.union(set.find(edges2[i].from), set.find(edges2[i].to));
+                    set.union(set.find(edges[i].from), set.find(edges[i].to));
                 }
             }
             for (int i = 0; i < sizeX * sizeY; i++)

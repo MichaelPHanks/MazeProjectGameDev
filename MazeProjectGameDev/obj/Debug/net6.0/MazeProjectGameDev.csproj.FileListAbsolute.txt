@@ -24,8 +24,6 @@ C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6.0\MazeProjectGameDev.genruntimeconfig.cache
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\obj\Debug\net6.0\ref\MazeProjectGameDev.dll
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\square.xnb
-C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\IMG_2092.xnb
-C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\saulgoodman.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundMaze.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundBoth.xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\backgroundBottom.xnb
@@ -36,3 +34,5 @@ C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixil-frame-0 (2).xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixil-frame-0 (3).xnb
 C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\spaceBackground.xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixil-frame-0 (4).xnb
+C:\Users\mhank\source\repos\MazeProjectGameDev\MazeProjectGameDev\bin\Debug\net6.0\Content\pixil-frame-0 (5).xnb
